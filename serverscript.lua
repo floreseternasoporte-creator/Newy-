@@ -524,4 +524,8 @@ end)
  
 print("[Server] ✅ Sistema Wattpad v4.0 CON TIEMPO REAL iniciado")
 print("[Server] 📚 Historias cargadas:", #AllStories)
-print("[Server] 👥 Autores registrados:", #vim.tbl_keys(AllAuthors))
+local authorsCount = 0
+for _ in pairs(AllAuthors) do
+    authorsCount = authorsCount + 1
+end
+print("[Server] 👥 Autores registrados:", authorsCount)

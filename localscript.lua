@@ -803,7 +803,7 @@ NavBtn("🏠", "Inicio", 0, function() GoHome() end)
                                 local searchDebounce = nil
                                 searchBox:GetPropertyChangedSignal("Text"):Connect(function() 
                                     if searchDebounce then
-                                        searchDebounce:Cancel()
+                                        task.cancel(searchDebounce)
                                     end
                                     searchDebounce = task.delay(0.5, function()
                                         if FilterSearchResults then FilterSearchResults(selectedCatPill) end
