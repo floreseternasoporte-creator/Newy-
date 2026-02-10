@@ -605,12 +605,42 @@ NavBtn("🏠", "Inicio", 0, function() GoHome() end)
                 local myProfileTitle = Label(profileScr, "Mi perfil", UDim2.new(1, 0, 0, 32), UDim2.new(0, 0, 0, 0), Colors.White, 22)
                 myProfileTitle.LayoutOrder = 1
                 myProfileTitle.TextXAlignment = Enum.TextXAlignment.Left
-                local myProfileName = Label(profileScr, player.DisplayName .. " (@" .. player.Name .. ")", UDim2.new(1, 0, 0, 24), UDim2.new(0, 0, 0, 0), Colors.Gray, 14)
-                myProfileName.LayoutOrder = 2
+
+                local myProfileHeader = Frame(profileScr, UDim2.new(1, 0, 0, 92), UDim2.new(0, 0, 0, 0), Colors.CardBg, 12)
+                myProfileHeader.LayoutOrder = 2
+                Stroke(myProfileHeader, Colors.Primary, 1)
+
+                local myAvatar = Instance.new("ImageLabel")
+                myAvatar.Size = UDim2.new(0, 64, 0, 64)
+                myAvatar.Position = UDim2.new(0, 14, 0, 14)
+                myAvatar.BackgroundColor3 = Colors.LightBg
+                myAvatar.BorderSizePixel = 0
+                myAvatar.Parent = myProfileHeader
+                Round(myAvatar, 999)
+
+                local okThumb, thumbContent = pcall(function()
+                    return Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size180x180)
+                end)
+                if okThumb then
+                    myAvatar.Image = thumbContent
+                end
+
+                local myProfileName = Label(myProfileHeader, player.DisplayName, UDim2.new(1, -92, 0, 28), UDim2.new(0, 86, 0, 18), Colors.White, 20)
                 myProfileName.TextXAlignment = Enum.TextXAlignment.Left
+                myProfileName.TextYAlignment = Enum.TextYAlignment.Center
+                myProfileName.Font = Enum.Font.GothamBold
+
+                local myProfileUser = Label(myProfileHeader, "@" .. player.Name, UDim2.new(1, -92, 0, 20), UDim2.new(0, 86, 0, 48), Colors.Gray, 13)
+                myProfileUser.TextXAlignment = Enum.TextXAlignment.Left
+                myProfileUser.TextYAlignment = Enum.TextYAlignment.Center
+
                 local myStoriesTitle = Label(profileScr, "Mis historias", UDim2.new(1, 0, 0, 24), UDim2.new(0, 0, 0, 0), Colors.White, 16)
                 myStoriesTitle.LayoutOrder = 3
                 myStoriesTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+                local myStoriesEmpty = Label(profileScr, "Aún no has publicado historias.", UDim2.new(1, 0, 0, 22), UDim2.new(0, 0, 0, 0), Colors.Gray, 13)
+                myStoriesEmpty.LayoutOrder = 4
+                myStoriesEmpty.TextXAlignment = Enum.TextXAlignment.Left
 
                 local function ClearMyStories()
                     for _, child in ipairs(profileScr:GetChildren()) do
@@ -626,8 +656,12 @@ NavBtn("🏠", "Inicio", 0, function() GoHome() end)
                         return GetUserStoriesFunction:InvokeServer(player.UserId)
                     end)
                     if not ok or not stories then
+                        myStoriesEmpty.Visible = true
                         return
                     end
+
+                    myStoriesEmpty.Visible = (#stories == 0)
+
                     for i = #stories, 1, -1 do
                         local card = CreateCard(profileScr, stories[i], false)
                         card.Name = "MyStoryCard"
